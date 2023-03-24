@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.first.mushroom.mybatis.db_mapper.UserInfoMapper">
+
+    <resultMap type="com.demo.wzq.mybatis.db_entity.UInfoEntity" id="userInfoResultMap">
+        <result property="goldAu" column="gold_au"/>
+        <result property="goldAg" column="gold_ag"/>
+        <result property="userId" column="id"/>
+        <result property="usedSpace" column="used_space"/>
+        <result property="createTime" column="create_time"/>
+        <result property="androidAndIosSalt" column="android_ios_salt"/>
+        <result property="webSalt" column="web_salt"/>
+        <result property="accountState" column="account_state"/>
+    </resultMap>
+
+    <!--查找最后一个用户的u_num-->
+    <insert id="addUser">
+        INSERT INTO `wzq`.`wzq_user` (`user_nick`, `user_account`, `user_password`, `user_integral`, `user_token`)
+        VALUES ('nick', 10000, 'paw', 0, 'tokens')
+    </insert>
+
+
+</mapper>
