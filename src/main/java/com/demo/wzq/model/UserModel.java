@@ -20,6 +20,7 @@ public class UserModel extends BaseModel {
         if (1 == addIndex) {
             r.setRespond(R.SUCCESS_CODE);
         }
+        MyBatisUtil.commit();
         return r;
     }
 

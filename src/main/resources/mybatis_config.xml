@@ -33,5 +33,7 @@
         <!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/ConfigLongMapper.xml"/>-->
     </mappers>
 
+    <!--    <mapper resource="com/kuang/dao/UserMapper.xml"/>-->
+
 
 </configuration>
