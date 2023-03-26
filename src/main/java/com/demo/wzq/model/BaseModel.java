@@ -1,5 +1,7 @@
 package com.demo.wzq.model;
 
+import com.demo.wzq.model.entity.R;
+
 /**
  * @author ThirdGoddess
  * @version 1.0.0
@@ -7,4 +9,7 @@ package com.demo.wzq.model;
  * @desc
  */
 public class BaseModel {
+
+
+
 }

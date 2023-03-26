@@ -15,7 +15,7 @@
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
                 <property
                         name="url"
-                        value="jdbc:mysql://127.0.0.1:3306/mushroom?characterEncoding=utf-8&amp;useUnicode=true&amp;allowMultiQueries=true"/>
+                        value="jdbc:mysql://127.0.0.1:3306/wzq?characterEncoding=utf-8&amp;useUnicode=true&amp;allowMultiQueries=true"/>
                 <property name="username" value="root"/>
                 <property name="password" value="123456"/>
             </dataSource>
@@ -25,11 +25,13 @@
 
     <!-- 加载映射文件 mapper -->
     <mappers>
-        <mapper resource="com/demo/wzq/mybatis/db_mapper/userMapper.xml"/>
-<!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/NickResMapper.xml"/>-->
-<!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/uFileMapper.xml"/>-->
-<!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/uInfoMapper.xml"/>-->
-<!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/SmsVerifyMapper.xml"/>-->
-<!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/ConfigLongMapper.xml"/>-->
+        <mapper resource="com/demo/wzq/mybatis/db_mapper/UserInfoMapper.xml"/>
+        <!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/NickResMapper.xml"/>-->
+        <!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/uFileMapper.xml"/>-->
+        <!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/uInfoMapper.xml"/>-->
+        <!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/SmsVerifyMapper.xml"/>-->
+        <!--        <mapper resource="com/first/mushroom/mybatis/db_mapper/ConfigLongMapper.xml"/>-->
     </mappers>
+
+
 </configuration>

@@ -2,6 +2,7 @@ package com.demo.wzq.model;
 
 import com.demo.wzq.model.entity.R;
 import com.demo.wzq.mybatis.MyBatisUtil;
+import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
 import lombok.AllArgsConstructor;
 
 /**
@@ -13,12 +14,12 @@ import lombok.AllArgsConstructor;
 public class UserModel extends BaseModel {
 
     public R register(R r) {
-
-
         //入库
-        MyBatisUtil.getMapper()
-
-
+        UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
+        int addIndex = mapper.addUser("nihaoya", 10000, "pass", 0, "tokenStr");
+        if (1 == addIndex) {
+            r.setRespond(R.SUCCESS_CODE);
+        }
         return r;
     }
 
