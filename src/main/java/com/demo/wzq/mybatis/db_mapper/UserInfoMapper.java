@@ -1,5 +1,7 @@
 package com.demo.wzq.mybatis.db_mapper;
 
+import com.demo.wzq.mybatis.db_entity.UInfoEntity;
+
 /**
  * @author ThirdGoddess
  * @version 1.0.0
@@ -13,7 +15,23 @@ public interface UserInfoMapper {
      *
      * @return UInfoEntity
      */
-    int addUser(String userNick,String userPassword,int userIntegral ,String userToken);
+    int addUser(UInfoEntity entity);
 
+    /**
+     * 修改用户Token
+     *
+     * @param id
+     * @param userToken
+     * @return
+     */
+    int updateUserToken(int id, String userToken);
+
+    /**
+     * 根据昵称获取id
+     *
+     * @param nickName
+     * @return
+     */
+    String getIdByNick(String nickName);
 
 }

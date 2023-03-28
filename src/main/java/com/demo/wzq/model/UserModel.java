@@ -3,6 +3,7 @@ package com.demo.wzq.model;
 import com.demo.wzq.model.entity.R;
 import com.demo.wzq.model.entity.Register;
 import com.demo.wzq.mybatis.MyBatisUtil;
+import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
 import com.demo.wzq.uitls.JwtUtils;
 
@@ -14,17 +15,45 @@ import com.demo.wzq.uitls.JwtUtils;
  */
 public class UserModel extends BaseModel {
 
+    /**
+     * 用户注册
+     *
+     * @param r
+     * @param nick
+     * @param password
+     * @return
+     */
     public R register(R r, String nick, String password) {
-        //入库
+
+        //获取mapper
         UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
-        int addIndex = mapper.addUser("nihaoya", "pass", 0, "tokenStr");
+
+        //判断昵称是否已存在
+        String idByNick = mapper.getIdByNick(nick.trim());
+        System.out.println(idByNick);
+
+        //入库
+        UInfoEntity uInfoEntity = new UInfoEntity(nick.trim(), getSha1(password.trim()), 0, "");
+        int addIndex = mapper.addUser(uInfoEntity);
+        int id = uInfoEntity.getId();
         if (1 == addIndex) {
+            String token = setUserToken(mapper, id);
             r.setRespond(R.SUCCESS_CODE);
-            String token = JwtUtils.createToken(addIndex, "nihaoya");
-            r.setData(new Register(nick,addIndex,token));
+            r.setData(new Register(nick, uInfoEntity.getId(), token));
         }
-        MyBatisUtil.commit();
         return r;
+    }
+
+    /**
+     * 设置用户Token
+     * @param mapper
+     * @param id
+     * @return
+     */
+    private String setUserToken(UserInfoMapper mapper, int id) {
+        String token = JwtUtils.createToken(id);
+        mapper.updateUserToken(id, token);
+        return token;
     }
 
 }

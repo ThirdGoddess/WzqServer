@@ -21,11 +21,11 @@ public class JwtUtils {
 
     private static final String key = "5ffc47efd29754f599d6e0c0527da196876aef27";
 
-    public static String createToken(int id, String name) {
+    public static String createToken(int id) {
         Map<String, Object> param = new HashMap<>();
-        param.put("salt", getRandomString(12));
+        param.put("salt", getRandomString(18));
         param.put("userId", id);
-        return createJwtToken(String.valueOf(id), name, param);
+        return createJwtToken(String.valueOf(id), "name", param);
     }
 
     private static String createJwtToken(String id, String name, Map<String, Object> map) {

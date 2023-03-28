@@ -19,6 +19,13 @@ public class UInfoEntity {
     private int id;
     private String userNick;
     private String userPassword;
-    private String userIntegral;
+    private int userIntegral;
     private String userToken;
+
+    public UInfoEntity(String userNick, String userPassword, int userIntegral, String userToken) {
+        this.userNick = userNick;
+        this.userPassword = userPassword;
+        this.userIntegral = userIntegral;
+        this.userToken = userToken;
+    }
 }

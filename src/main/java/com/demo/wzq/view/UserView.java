@@ -3,6 +3,7 @@ package com.demo.wzq.view;
 import com.demo.wzq.model.UserModel;
 import com.demo.wzq.model.entity.R;
 import com.demo.wzq.model.entity.Register;
+import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.uitls.TextUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,9 @@ public class UserView {
                 if (nick.trim().length() <= 6) {
                     if (password.trim().length() >= 6) {
                         if (password.trim().length() <= 18) {
-                            return userModel.register(registerR,nick,password);
+                            R register = userModel.register(registerR, nick, password);
+                            MyBatisUtil.commit();
+                            return register;
                         } else {
                             registerR.setMsg("密码最长长度为18位");
                         }

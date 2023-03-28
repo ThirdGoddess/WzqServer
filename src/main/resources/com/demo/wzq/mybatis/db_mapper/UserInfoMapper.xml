@@ -12,11 +12,26 @@
         <result property="userToken" column="user_token"/>
     </resultMap>
 
-    <!--查找最后一个用户的u_num-->
-    <insert id="addUser" keyProperty="id" useGeneratedKeys="true">
+    <!--添加一个用户-->
+    <insert id="addUser" parameterType="com.demo.wzq.mybatis.db_entity.UInfoEntity" keyProperty="id"
+            useGeneratedKeys="true">
         INSERT INTO `wzq`.`wzq_user` (`user_nick`, `user_password`, `user_integral`, `user_token`)
         VALUES (#{userNick}, #{userPassword}, #{userIntegral}, #{userToken})
     </insert>
 
+    <!--设置用户token-->
+    <update id="updateUserToken">
+        UPDATE `wzq`.`wzq_user`
+        SET `user_token` = #{userToken}
+        WHERE `id` = #{id}
+    </update>
+
+    <!--根据昵称查询id-->
+    <select id="getIdByNick" resultType="String">
+        SELECT id
+        from wzq_user
+        WHERE user_nick = #{nickName}
+        LIMIT 1;
+    </select>
 
 </mapper>
