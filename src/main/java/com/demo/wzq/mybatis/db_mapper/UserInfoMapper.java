@@ -13,7 +13,7 @@ public interface UserInfoMapper {
      *
      * @return UInfoEntity
      */
-    int addUser(String userNick,int userAccount,String userPassword,int userIntegral ,String userToken);
+    int addUser(String userNick,String userPassword,int userIntegral ,String userToken);
 
 
 }

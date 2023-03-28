@@ -7,16 +7,15 @@
 
     <resultMap type="com.demo.wzq.mybatis.db_entity.UInfoEntity" id="userInfoResultMap">
         <result property="userNick" column="user_nick"/>
-        <result property="userAccount" column="user_account"/>
         <result property="userPassword" column="user_password"/>
         <result property="userIntegral" column="user_integral"/>
         <result property="userToken" column="user_token"/>
     </resultMap>
 
     <!--查找最后一个用户的u_num-->
-    <insert id="addUser">
-        INSERT INTO `wzq`.`wzq_user` (`user_nick`, `user_account`, `user_password`, `user_integral`, `user_token`)
-        VALUES (#{userNick}, #{userAccount}, #{userPassword}, #{userIntegral}, #{userToken})
+    <insert id="addUser" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `wzq`.`wzq_user` (`user_nick`, `user_password`, `user_integral`, `user_token`)
+        VALUES (#{userNick}, #{userPassword}, #{userIntegral}, #{userToken})
     </insert>
 
 

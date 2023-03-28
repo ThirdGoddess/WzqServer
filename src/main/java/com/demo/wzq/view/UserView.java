@@ -20,33 +20,33 @@ public class UserView {
 
     private static final String url_register = "register";
 
-    private UserModel userModel= new UserModel();
+    private UserModel userModel = new UserModel();
 
     @PostMapping(value = url_register)
-    public R<Register> register(String nick, String password) {
+    public R register(String nick, String password) {
 
-        R<Register> registerR = new R<>();
+        R registerR = new R();
 
         //判断是否符合入库条件
-        if (!TextUtil.isEmpty(nick) ) {
-            if(!TextUtil.isEmpty(password)){
-                if( nick.trim().length() <= 6 ){
-                    if(password.trim().length() >= 6){
-                        if(password.trim().length() <= 18){
-                            userModel.register(registerR);
-                        }else{
+        if (!TextUtil.isEmpty(nick)) {
+            if (!TextUtil.isEmpty(password)) {
+                if (nick.trim().length() <= 6) {
+                    if (password.trim().length() >= 6) {
+                        if (password.trim().length() <= 18) {
+                            return userModel.register(registerR,nick,password);
+                        } else {
                             registerR.setMsg("密码最长长度为18位");
                         }
-                    }else{
+                    } else {
                         registerR.setMsg("密码设定必须大于6位");
                     }
-                }else{
+                } else {
                     registerR.setMsg("昵称最长6个字符");
                 }
-            }else{
+            } else {
                 registerR.setMsg("密码不可为空");
             }
-        }else{
+        } else {
             registerR.setMsg("昵称不可为空");
         }
         return registerR;

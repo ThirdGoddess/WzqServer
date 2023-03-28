@@ -15,10 +15,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class R<T> {
+public class R {
     private int code;
     private String msg;
-    private T data;
+    private Object data;
 
     public static final int SUCCESS_CODE = 200;
     public static final String SUCCESS_MSG = "success";

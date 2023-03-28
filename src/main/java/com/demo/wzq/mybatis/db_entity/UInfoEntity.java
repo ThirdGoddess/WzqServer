@@ -18,7 +18,6 @@ import lombok.Setter;
 public class UInfoEntity {
     private int id;
     private String userNick;
-    private String userAccount;
     private String userPassword;
     private String userIntegral;
     private String userToken;
