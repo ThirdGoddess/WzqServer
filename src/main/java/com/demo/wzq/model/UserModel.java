@@ -29,23 +29,27 @@ public class UserModel extends BaseModel {
         UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
 
         //判断昵称是否已存在
-        String idByNick = mapper.getIdByNick(nick.trim());
-        System.out.println(idByNick);
-
-        //入库
-        UInfoEntity uInfoEntity = new UInfoEntity(nick.trim(), getSha1(password.trim()), 0, "");
-        int addIndex = mapper.addUser(uInfoEntity);
-        int id = uInfoEntity.getId();
-        if (1 == addIndex) {
-            String token = setUserToken(mapper, id);
-            r.setRespond(R.SUCCESS_CODE);
-            r.setData(new Register(nick, uInfoEntity.getId(), token));
+        String nickName = mapper.getNickByNick(nick.trim());
+        if (null == nickName) {
+            //入库
+            UInfoEntity uInfoEntity = new UInfoEntity(nick.trim(), getSha1(password.trim()), 0, "");
+            int addIndex = mapper.addUser(uInfoEntity);
+            int id = uInfoEntity.getId();
+            if (1 == addIndex) {
+                String token = setUserToken(mapper, id);
+                r.setRespond(R.SUCCESS_CODE);
+                r.setData(new Register(nick, uInfoEntity.getId(), token));
+            }
+        } else {
+            r.setCode(R.FAILED_CODE);
+            r.setMsg("当前昵称已存在");
         }
         return r;
     }
 
     /**
      * 设置用户Token
+     *
      * @param mapper
      * @param id
      * @return

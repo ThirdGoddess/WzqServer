@@ -32,6 +32,6 @@ public interface UserInfoMapper {
      * @param nickName
      * @return
      */
-    String getIdByNick(String nickName);
+    String getNickByNick(String nickName);
 
 }

@@ -27,8 +27,8 @@
     </update>
 
     <!--根据昵称查询id-->
-    <select id="getIdByNick" resultType="String">
-        SELECT id
+    <select id="getNickByNick" resultType="String">
+        SELECT user_nick
         from wzq_user
         WHERE user_nick = #{nickName}
         LIMIT 1;
