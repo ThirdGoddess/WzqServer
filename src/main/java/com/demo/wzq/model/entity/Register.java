@@ -17,6 +17,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Register {
     private String userNick;
-    private int userAccount;
+    private int account;
     private String token;
 }

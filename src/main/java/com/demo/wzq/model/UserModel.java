@@ -6,6 +6,10 @@ import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
 import com.demo.wzq.uitls.JwtUtils;
+import com.squareup.okhttp.*;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ThirdGoddess
@@ -58,6 +62,36 @@ public class UserModel extends BaseModel {
         String token = JwtUtils.createToken(id);
         mapper.updateUserToken(id, token);
         return token;
+    }
+
+    private final OkHttpClient client = new OkHttpClient();
+
+    public void test() {
+
+        for (int i = 0; i < 1000; i++) {
+            new Thread(() -> {
+                String json = "{\"text\":\"你好呀ChatGPT" + getFlag() + "\"}";
+
+                RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+
+                Request request = new Request.Builder().url("http://doubleshi.com:8081/openai/chat").post(body).build();
+
+                Call call = client.newCall(request);
+                try {
+                    Response response = call.execute();
+                    System.out.println(response.body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+
+    private static int flag = 1;
+
+    private synchronized int getFlag() {
+        flag++;
+        return flag;
     }
 
 }
