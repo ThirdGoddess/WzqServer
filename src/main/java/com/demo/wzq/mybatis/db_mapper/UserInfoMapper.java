@@ -34,4 +34,12 @@ public interface UserInfoMapper {
      */
     String getNickByNick(String nickName);
 
+    /**
+     * 根据id获取用户
+     *
+     * @param id
+     * @return
+     */
+    UInfoEntity getUserById(int id);
+
 }

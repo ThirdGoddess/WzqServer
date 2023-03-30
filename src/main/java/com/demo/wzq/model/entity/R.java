@@ -28,17 +28,14 @@ public class R {
     public static final int FAILED_CODE = 600;
     public static final String FAILED_MSG = "failed";
 
-    public void setRespond(int code) {
-        switch (code) {
-            case SUCCESS_CODE:
-                setCode(SUCCESS_CODE);
-                setMsg(SUCCESS_MSG);
-                break;
-            case FAILED_CODE:
-                setCode(FAILED_CODE);
-                setMsg(FAILED_MSG);
-                break;
-        }
+    public void setSuccessRespond() {
+        setCode(SUCCESS_CODE);
+        setMsg(SUCCESS_MSG);
+    }
+
+    public void setFailedState(String msg) {
+        setCode(FAILED_CODE);
+        setMsg(msg);
     }
 
 

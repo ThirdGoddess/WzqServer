@@ -41,12 +41,37 @@ public class UserModel extends BaseModel {
             int id = uInfoEntity.getId();
             if (1 == addIndex) {
                 String token = setUserToken(mapper, id);
-                r.setRespond(R.SUCCESS_CODE);
+                r.setSuccessRespond();
                 r.setData(new Register(nick, uInfoEntity.getId(), token));
             }
         } else {
             r.setCode(R.FAILED_CODE);
             r.setMsg("当前昵称已存在");
+        }
+        return r;
+    }
+
+    /**
+     * 登录
+     *
+     * @param r
+     * @param account
+     * @param password
+     * @return
+     */
+    public R login(R r, int account, String password) {
+        //获取mapper
+        UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
+        UInfoEntity userInfo = mapper.getUserById(account);
+        if (null != userInfo) {
+            String userPassword = userInfo.getUserPassword();
+            if(getSha1(password).equals(userPassword)){
+                String token = setUserToken(mapper, account);
+            }else{
+                r.setFailedState("用户名或密码错误");
+            }
+        } else {
+            r.setFailedState("用户名或密码错误");
         }
         return r;
     }

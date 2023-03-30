@@ -34,4 +34,11 @@
         LIMIT 1;
     </select>
 
+    <select id="getUserById" resultType="com.demo.wzq.mybatis.db_entity.UInfoEntity" resultMap="userInfoResultMap">
+        SELECT *
+        from wzq_user
+        WHERE id = #{id}
+        LIMIT 1;
+    </select>
+
 </mapper>

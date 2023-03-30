@@ -24,6 +24,13 @@ public class UserView {
 
     private UserModel userModel = new UserModel();
 
+    /**
+     * 注册并登录
+     *
+     * @param nick
+     * @param password
+     * @return
+     */
     @PostMapping(value = url_register)
     public R register(String nick, String password) {
 
@@ -42,35 +49,37 @@ public class UserView {
                                 return register;
                             } else {
                                 registerR.setCode(R.FAILED_CODE);
-                                registerR.setMsg("密码不符合规范，只能由大小写字母和数字组成");
+                                registerR.setFailedState("密码不符合规范，只能由大小写字母和数字组成");
                             }
                         } else {
-                            registerR.setCode(R.FAILED_CODE);
-                            registerR.setMsg("密码最长18个字符");
+                            registerR.setFailedState("密码最长18个字符");
                         }
                     } else {
-                        registerR.setCode(R.FAILED_CODE);
-                        registerR.setMsg("密码设定必须大于6位");
+                        registerR.setFailedState("密码设定必须大于6位");
                     }
                 } else {
-                    registerR.setCode(R.FAILED_CODE);
-                    registerR.setMsg("昵称最长6个字符");
+                    registerR.setFailedState("昵称最长6个字符");
                 }
             } else {
-                registerR.setCode(R.FAILED_CODE);
-                registerR.setMsg("密码不可为空");
+                registerR.setFailedState("密码不可为空");
             }
         } else {
-            registerR.setCode(R.FAILED_CODE);
-            registerR.setMsg("昵称不可为空");
+            registerR.setFailedState("昵称不可为空");
         }
         return registerR;
     }
 
+    /**
+     * 登录
+     *
+     * @param account
+     * @param password
+     * @return
+     */
     @PostMapping(value = url_login)
     public R login(int account, String password) {
         R registerR = new R();
-
+        R register = userModel.login(registerR, account, password);
 
 //        registerR.setCode();
 
@@ -78,10 +87,10 @@ public class UserView {
     }
 
     @PostMapping(value = "test")
-    public R test(){
+    public R test() {
         R registerR = new R();
         userModel.test();
-        registerR.setRespond(R.SUCCESS_CODE);
+        registerR.setSuccessRespond();
         return registerR;
     }
 

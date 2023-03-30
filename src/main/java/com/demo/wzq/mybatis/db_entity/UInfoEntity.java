@@ -1,9 +1,6 @@
 package com.demo.wzq.mybatis.db_entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * @author ThirdGoddess
@@ -15,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class UInfoEntity {
     private int id;
     private String userNick;
