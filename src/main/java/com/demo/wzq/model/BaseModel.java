@@ -1,7 +1,5 @@
 package com.demo.wzq.model;
 
-import com.demo.wzq.model.entity.R;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 

@@ -1,4 +1,4 @@
-package com.demo.wzq.model.entity;
+package com.demo.wzq.model.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

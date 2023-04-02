@@ -1,15 +1,16 @@
 package com.demo.wzq.model;
 
-import com.demo.wzq.model.entity.R;
-import com.demo.wzq.model.entity.Register;
+import com.demo.wzq.model.entity.LoginEntity;
+import com.demo.wzq.model.entity.base.R;
+import com.demo.wzq.model.entity.RegisterEntity;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
+import com.demo.wzq.socket.SocketManager;
 import com.demo.wzq.uitls.JwtUtils;
 import com.squareup.okhttp.*;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author ThirdGoddess
@@ -42,7 +43,7 @@ public class UserModel extends BaseModel {
             if (1 == addIndex) {
                 String token = setUserToken(mapper, id);
                 r.setSuccessRespond();
-                r.setData(new Register(nick, uInfoEntity.getId(), token));
+                r.setData(new RegisterEntity(nick, uInfoEntity.getId(), token, uInfoEntity.getUserIntegral()));
             }
         } else {
             r.setCode(R.FAILED_CODE);
@@ -65,14 +66,21 @@ public class UserModel extends BaseModel {
         UInfoEntity userInfo = mapper.getUserById(account);
         if (null != userInfo) {
             String userPassword = userInfo.getUserPassword();
-            if(getSha1(password).equals(userPassword)){
+            if (userPassword.equals(getSha1(password))) {
+
+                //只要登录，不管有没有socket连接，向socket发送异地登录消息
+                SocketManager.sendMessage_3(account);
+
                 String token = setUserToken(mapper, account);
-            }else{
+                r.setSuccessRespond();
+                r.setData(new LoginEntity(userInfo.getUserNick(), userInfo.getId(), token, userInfo.getUserIntegral()));
+            } else {
                 r.setFailedState("用户名或密码错误");
             }
         } else {
             r.setFailedState("用户名或密码错误");
         }
+        MyBatisUtil.commit();
         return r;
     }
 

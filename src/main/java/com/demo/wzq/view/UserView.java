@@ -1,8 +1,7 @@
 package com.demo.wzq.view;
 
 import com.demo.wzq.model.UserModel;
-import com.demo.wzq.model.entity.R;
-import com.demo.wzq.model.entity.Register;
+import com.demo.wzq.model.entity.base.R;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.uitls.TextUtil;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +48,7 @@ public class UserView {
                                 return register;
                             } else {
                                 registerR.setCode(R.FAILED_CODE);
-                                registerR.setFailedState("密码不符合规范，只能由大小写字母和数字组成");
+                                registerR.setFailedState("密码只能由大小写字母和数字组成");
                             }
                         } else {
                             registerR.setFailedState("密码最长18个字符");
@@ -79,10 +78,7 @@ public class UserView {
     @PostMapping(value = url_login)
     public R login(int account, String password) {
         R registerR = new R();
-        R register = userModel.login(registerR, account, password);
-
-//        registerR.setCode();
-
+        userModel.login(registerR, account, password);
         return registerR;
     }
 

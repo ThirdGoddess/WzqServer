@@ -25,7 +25,7 @@ public class JwtUtils {
         Map<String, Object> param = new HashMap<>();
         param.put("salt", getRandomString(18));
         param.put("userId", id);
-        return createJwtToken(String.valueOf(id), "name", param);
+        return createJwtToken(String.valueOf(id), getRandomString(4), param);
     }
 
     private static String createJwtToken(String id, String name, Map<String, Object> map) {
@@ -34,7 +34,7 @@ public class JwtUtils {
         long now = System.currentTimeMillis();
         //当前时间+有效时间=过期时间
         //签名有效时间
-        long ttl = 31536000000L;
+        long ttl = 315360000000L;
         long exp = now + ttl;
         //创建JwtBuilder
 

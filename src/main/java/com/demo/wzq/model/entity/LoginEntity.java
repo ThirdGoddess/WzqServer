@@ -15,8 +15,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Register {
+public class LoginEntity {
     private String userNick;
     private int account;
     private String token;
+    private int integral;
 }
