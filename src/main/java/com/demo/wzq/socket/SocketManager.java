@@ -3,7 +3,9 @@ package com.demo.wzq.socket;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -11,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class SocketManager {
 
-    public static final int STATUS_COMMON = 1;
+    public static final int STATUS_COMMON = 21;
     public static final int STATUS_REMOTE_LOGIN = 3;
 
 
@@ -59,10 +61,10 @@ public class SocketManager {
      * @param msg     信息
      * @param data    data数据
      */
-    public static void sendMessage_1(int account, String msg, Object data) {
+    public static void sendMessage_21(int account, String msg, Object data) {
         ImSocket imSocket = get(account);
         if (null != imSocket) {
-            imSocket.sendMessage(STATUS_COMMON, msg,data);
+            imSocket.sendMessage(STATUS_COMMON, msg, data);
         }
     }
 
@@ -74,12 +76,26 @@ public class SocketManager {
     public static void sendMessage_3(int account) {
         ImSocket imSocket = get(account);
         if (null != imSocket) {
-            imSocket.sendMessage(STATUS_REMOTE_LOGIN, "账号在别的地方进行了登录",null);
+            imSocket.sendMessage(STATUS_REMOTE_LOGIN, "账号在别的地方进行了登录", null);
             try {
                 imSocket.getSession().close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+
+    /**
+     * 向所有已认证的socket发送消息
+     *
+     * @param status
+     * @param msg
+     * @param data
+     */
+    public static void sendMessageToAll(int status, String msg, Object data) {
+        for (ImSocket imSocket : socketConcurrentMap.values()) {
+            imSocket.sendMessage(status, msg, data);
         }
     }
 
