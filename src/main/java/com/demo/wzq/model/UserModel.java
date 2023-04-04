@@ -9,6 +9,7 @@ import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
 import com.demo.wzq.socket.SocketManager;
 import com.demo.wzq.uitls.JwtUtils;
 import com.squareup.okhttp.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
  * @time 2023/3/24 17:26
  * @desc 用户操作相关
  */
+@Slf4j
 public class UserModel extends BaseModel {
 
     /**
@@ -80,7 +82,6 @@ public class UserModel extends BaseModel {
         } else {
             r.setFailedState("用户名或密码错误");
         }
-        MyBatisUtil.commit();
         return r;
     }
 

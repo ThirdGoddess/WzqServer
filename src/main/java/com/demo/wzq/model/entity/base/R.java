@@ -20,6 +20,7 @@ import lombok.Setter;
 public class R {
     private int code;
     private String msg;
+    private String sneer;
     private Object data;
 
     public static final int SUCCESS_CODE = 200;

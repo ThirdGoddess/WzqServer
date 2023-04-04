@@ -60,7 +60,9 @@ public class ImSocket {
     //收到消息
     @OnMessage
     public void onMessage(Session session, String message) {
+        if (isVerify) {
 
+        }
     }
 
     /**

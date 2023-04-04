@@ -6,10 +6,13 @@ import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
 import com.demo.wzq.socket.SocketManager;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SocketModel extends BaseModel {
 
     public void verify(R r, String token, int userId) {
+        log.info("线程名：{}", Thread.currentThread().getId());
         UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
         UInfoEntity user = mapper.getUserById(userId);
         if (null != user) {
@@ -17,7 +20,7 @@ public class SocketModel extends BaseModel {
                 if (SocketManager.verifyPass(userId)) {
                     r.setSuccessRespond();
                 } else {
-                    r.setFailedState("socket连接验证失败");
+                    r.setFailedState("未建立socket连接");
                 }
             } else {
                 r.setFailedState("socket连接验证失败");

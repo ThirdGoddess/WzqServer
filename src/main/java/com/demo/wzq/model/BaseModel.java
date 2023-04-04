@@ -1,5 +1,7 @@
 package com.demo.wzq.model;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
@@ -9,6 +11,7 @@ import java.security.MessageDigest;
  * @time 2023/3/24 17:27
  * @desc
  */
+@Slf4j
 public class BaseModel {
 
     public static String getSha1(String str) {

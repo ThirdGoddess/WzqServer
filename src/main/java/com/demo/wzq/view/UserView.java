@@ -43,9 +43,7 @@ public class UserView {
                     if (password.trim().length() >= 6) {
                         if (password.trim().length() <= 18) {
                             if (TextUtil.isPasswordStandard(password.trim())) {
-                                R register = userModel.register(registerR, nickName, password);
-                                MyBatisUtil.commit();
-                                return register;
+                                return userModel.register(registerR, nickName, password);
                             } else {
                                 registerR.setCode(R.FAILED_CODE);
                                 registerR.setFailedState("密码只能由大小写字母和数字组成");
