@@ -1,12 +1,18 @@
 package com.demo.wzq.view;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.demo.wzq.model.UserModel;
 import com.demo.wzq.model.entity.base.R;
 import com.demo.wzq.mybatis.MyBatisUtil;
+import com.demo.wzq.uitls.IpUtil;
+import com.demo.wzq.uitls.Log;
 import com.demo.wzq.uitls.TextUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author ThirdGoddess
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @time 2023/3/24 17:04
  * @desc
  */
+@Slf4j
 @RestController
 @RequestMapping("user")
 public class UserView {
@@ -31,7 +38,7 @@ public class UserView {
      * @return
      */
     @PostMapping(value = url_register)
-    public R register(String nick, String password) {
+    public R register(HttpServletRequest request, String nick, String password) {
 
         R registerR = new R();
 
@@ -43,7 +50,7 @@ public class UserView {
                     if (password.trim().length() >= 6) {
                         if (password.trim().length() <= 18) {
                             if (TextUtil.isPasswordStandard(password.trim())) {
-                                return userModel.register(registerR, nickName, password);
+                                registerR = userModel.register(registerR, nickName, password);
                             } else {
                                 registerR.setCode(R.FAILED_CODE);
                                 registerR.setFailedState("密码只能由大小写字母和数字组成");
@@ -63,6 +70,7 @@ public class UserView {
         } else {
             registerR.setFailedState("昵称不可为空");
         }
+        Log.respond(request, registerR);
         return registerR;
     }
 

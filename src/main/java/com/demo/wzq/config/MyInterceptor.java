@@ -5,6 +5,7 @@ import com.demo.wzq.model.entity.base.R;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.uitls.IpUtil;
 import com.demo.wzq.uitls.JwtUtils;
+import com.demo.wzq.uitls.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,9 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author ThirdGoddess
@@ -33,19 +31,18 @@ public class MyInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String ipStr = IpUtil.getIpStr(request);
-        String requestURI = request.getRequestURI();
+
         String userToken = request.getHeader("UserToken");
 
-        log.info("{} => {}", ipStr, requestURI);
+        Log.request(request);
 
         //判断是否跳过拦截
-        if (isPass(requestURI)) return true;
+        if (isPass(request.getRequestURI())) return true;
 
 
         //验证Token
         if (-1 == JwtUtils.getUserId(userToken)) {
-            responseMsg(ipStr, requestURI, response, "token error", "呦小伙子,不要干坏事哦!整不好要封号哦!");
+            responseMsg(request, response, "token error", "呦小伙子,不要干坏事哦!整不好要封号哦!");
             return false;
         }
 
@@ -58,7 +55,7 @@ public class MyInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        log.info("响应2");
+
     }
 
     /**
@@ -67,8 +64,6 @@ public class MyInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         MyBatisUtil.commit();
-//        log.info(response.toString());
-        log.info("响应3"+response.getWriter().);
     }
 
     private static final String[] PASS_URL_ARR = new String[]{"/user/login", "/user/register"};
@@ -90,7 +85,7 @@ public class MyInterceptor implements HandlerInterceptor {
      * @param sneer    嘲讽
      * @throws IOException 异常
      */
-    private void responseMsg(String ip, String uri, HttpServletResponse response, String msg, String sneer) throws IOException {
+    private void responseMsg(HttpServletRequest request, HttpServletResponse response, String msg, String sneer) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-Type", "text/html;charset=UTF-8");
         R r = new R();
@@ -99,7 +94,7 @@ public class MyInterceptor implements HandlerInterceptor {
         String s = JSONObject.toJSONString(r);
         response.getWriter().println(s);
         response.getWriter().close();
-        log.info("{} <= {} :{}", ip, uri, s);
+        Log.request(request);
         MyBatisUtil.commit();
     }
 
