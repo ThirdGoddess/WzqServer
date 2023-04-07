@@ -95,4 +95,12 @@ public class Log {
             log.info("socket = id:{} 未认证 -> {}", account, jsonString);
         }
     }
+
+    public static void socketInfoMessage(int account, boolean isVerify, String str) {
+        if (isVerify) {
+            log.info("socket = id:{} 已认证 || {}", account, str);
+        } else {
+            log.info("socket = id:{} 未认证 || {}", account, str);
+        }
+    }
 }

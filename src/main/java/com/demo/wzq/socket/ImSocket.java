@@ -36,7 +36,7 @@ public class ImSocket {
 
     //连接时执行
     @OnOpen
-    public void onOpen(@PathParam("token") String token, Session session) throws IOException {
+    public void onOpen(@PathParam("token") String token, Session session) {
 
         int account = JwtUtils.getUserId(token);
         this.session = session;
@@ -46,22 +46,36 @@ public class ImSocket {
         if (-1 != account) {
             UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
             UInfoEntity userTemp = mapper.getUserById(account);
+            MyBatisUtil.commit();
             if (userTemp.getUserToken().equals(token)) {
                 ImSocket imSocket = SocketManager.get(account);
                 if (null == imSocket) {
                     isVerify = true;
                     SocketManager.put(account, this);
+                    Log.socketInfoMessage(account, isVerify, "认证通过,长连接成功");
                 } else {
                     sendMessage(SocketManager.STATUS_FAILED, "连接已存在，拒绝连接", null);
-                    session.close();
+                    try {
+                        this.session.close();
+                    } catch (Exception ignored) {
+
+                    }
                 }
             } else {
                 sendMessage(SocketManager.STATUS_FAILED, "非法连接，Token失效", null);
-                session.close();
+                try {
+                    this.session.close();
+                } catch (Exception ignored) {
+
+                }
             }
         } else {
             sendMessage(SocketManager.STATUS_FAILED, "非法连接，Token校验错误", null);
-            session.close();
+            try {
+                this.session.close();
+            } catch (Exception ignored) {
+
+            }
         }
     }
 
@@ -69,6 +83,7 @@ public class ImSocket {
     @OnClose
     public void onClose() {
         SocketManager.remove(account);
+        Log.socketInfoMessage(account, isVerify, "断开连接");
     }
 
     //连接错误时执行

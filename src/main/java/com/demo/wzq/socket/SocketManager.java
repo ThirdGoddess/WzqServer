@@ -30,13 +30,8 @@ public class SocketManager {
     }
 
     public static void remove(int account) {
-
         ImSocket imSocket = get(account);
-        if (imSocket.isVerify()) {
-            //退出房间
-            WzqGameHelper.getInstance().exitRoom(account);
-        }
-
+        WzqGameHelper.getInstance().exitRoom(account);
         socketConcurrentMap.remove(account);
     }
 
@@ -85,7 +80,6 @@ public class SocketManager {
             imSocket.sendMessage(STATUS_REMOTE_LOGIN, "账号在别的地方进行了登录", null);
             try {
                 imSocket.getSession().close();
-                remove(account);
             } catch (Exception ignored) {
 
             }

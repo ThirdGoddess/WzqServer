@@ -136,13 +136,19 @@ public class WzqGameHelper {
             for (User value : roomUsers.values()) {
                 if (value.getAccount() == account) {
                     WzqRoom wzqRoom = wzqGames.get(value.getRoomId());
-                    if (wzqRoom.getUserA().getAccount() == account) {
-
-                    } else if (wzqRoom.getUserB().getAccount() == account) {
-
+                    if (null != wzqRoom.getUserA() && wzqRoom.getUserA().getAccount() == account) {
+                        wzqRoom.setUserA(null);
+                    } else if (null != wzqRoom.getUserB() && wzqRoom.getUserB().getAccount() == account) {
+                        wzqRoom.setUserB(null);
                     }
 
                     //TODO 通知对局结果
+
+                    //TODO 通知所有人房间列表
+
+
+                    //结束
+                    return;
                 }
 //            value
             }
