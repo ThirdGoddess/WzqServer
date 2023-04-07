@@ -1,6 +1,8 @@
 package com.demo.wzq.socket;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
 import com.demo.wzq.game.WzqGameHelper;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
@@ -123,6 +125,37 @@ public class ImSocket {
             json.put("data", data);
         }
         String jsonString = json.toString();
+        try {
+            this.session.getBasicRemote().sendText(jsonString);
+            Log.socketSendMessage(account, isVerify, jsonString);
+        } catch (Exception ignored) {
+            Log.socketSendMessage(account, isVerify, jsonString + ignored);
+        }
+
+
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param status
+     * @param message
+     * @param data
+     */
+    public void sendMessage(int status, int type, String message, Object data) {
+
+        JSONObject json = new JSONObject();
+        json.put("status", status);
+        json.put("msg", message);
+        json.put("type", type);
+        json.putObject("body");
+
+        if (null != data) {
+            json.getJSONObject("body").put("type", type);
+            json.getJSONObject("body").put("data", data);
+        }
+
+        String jsonString = JSONObject.toJSONString(json, JSONWriter.Feature.WriteMapNullValue);
         try {
             this.session.getBasicRemote().sendText(jsonString);
             Log.socketSendMessage(account, isVerify, jsonString);

@@ -4,6 +4,8 @@ import com.demo.wzq.game.obj.User;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
+import com.demo.wzq.socket.ImSocket;
+import com.demo.wzq.socket.SocketManager;
 import lombok.*;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
@@ -107,6 +109,7 @@ public class WzqGameHelper {
                     User userATemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserA(userATemp);
                     roomUsers.put(account, userATemp);
+                    sendAllRoomList();
                     return 1;
                 } else if (userB == null) {
                     //B座位为空
@@ -115,10 +118,11 @@ public class WzqGameHelper {
                     User userBTemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserB(userBTemp);
                     roomUsers.put(account, userBTemp);
-                    return 2;
+                    sendAllRoomList();
+                    return 1;
                 } else {
                     //房间对局座位已满
-                    return 3;
+                    return 2;
                 }
             } else {
                 return 3;
@@ -145,7 +149,7 @@ public class WzqGameHelper {
                     //TODO 通知对局结果
 
                     //TODO 通知所有人房间列表
-
+                    sendAllRoomList();
 
                     //结束
                     return;
@@ -153,6 +157,14 @@ public class WzqGameHelper {
 //            value
             }
         }
+    }
+
+    /**
+     * 向所有人发送房间列表
+     */
+    private void sendAllRoomList() {
+        List<RoomInfo> wzqRoomList = getWzqRoomList();
+        SocketManager.sendMessageToAll(21, 1, "success", wzqRoomList);
     }
 
     @Getter

@@ -94,9 +94,9 @@ public class SocketManager {
      * @param msg
      * @param data
      */
-    public static void sendMessageToAll(int status, String msg, Object data) {
+    public static void sendMessageToAll(int status, int type, String msg, Object data) {
         for (ImSocket imSocket : socketConcurrentMap.values()) {
-            imSocket.sendMessage(status, msg, data);
+            imSocket.sendMessage(status, type, msg, data);
         }
     }
 
