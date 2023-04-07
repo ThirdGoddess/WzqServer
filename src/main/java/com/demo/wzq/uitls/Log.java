@@ -73,4 +73,26 @@ public class Log {
         log.info("id:{} ip:{} -> {}", userId, ipStr, requestURI);
     }
 
+    /**
+     * socket日志
+     *
+     * @param account
+     * @param isVerify
+     * @param jsonString
+     */
+    public static void socketSendMessage(int account, boolean isVerify, String jsonString) {
+        if (isVerify) {
+            log.info("socket = id:{} 已认证 <= {}", account, jsonString);
+        } else {
+            log.info("socket = id:{} 未认证 <= {}", account, jsonString);
+        }
+    }
+
+    public static void socketRequestMessage(int account, boolean isVerify, String jsonString) {
+        if (isVerify) {
+            log.info("socket = id:{} 已认证 -> {}", account, jsonString);
+        } else {
+            log.info("socket = id:{} 未认证 -> {}", account, jsonString);
+        }
+    }
 }

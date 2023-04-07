@@ -1,5 +1,6 @@
 package com.demo.wzq.socket;
 
+import com.demo.wzq.game.WzqGameHelper;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentMap;
 public class SocketManager {
 
     public static final int STATUS_COMMON = 21;
+    public static final int STATUS_FAILED = 22;
     public static final int STATUS_REMOTE_LOGIN = 3;
 
 
@@ -28,6 +30,13 @@ public class SocketManager {
     }
 
     public static void remove(int account) {
+
+        ImSocket imSocket = get(account);
+        if (imSocket.isVerify()) {
+            //退出房间
+            WzqGameHelper.getInstance().exitRoom(account);
+        }
+
         socketConcurrentMap.remove(account);
     }
 
@@ -37,22 +46,6 @@ public class SocketManager {
 
     //===========================================================================
     //业务代码
-
-    /**
-     * 验证通过
-     *
-     * @param account id
-     * @return boolean
-     */
-    public static boolean verifyPass(int account) {
-        ImSocket imSocket = get(account);
-        if (null != imSocket) {
-            get(account).setVerify(true);
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * 发送业务消息
@@ -69,6 +62,19 @@ public class SocketManager {
     }
 
     /**
+     * 发送一般错误消息
+     *
+     * @param account 账号
+     * @param msg     信息
+     */
+    public static void sendMessage_22(int account, String msg) {
+        ImSocket imSocket = get(account);
+        if (null != imSocket) {
+            imSocket.sendMessage(STATUS_FAILED, msg, null);
+        }
+    }
+
+    /**
      * 发送被异地登录消息
      *
      * @param account 账号
@@ -79,8 +85,9 @@ public class SocketManager {
             imSocket.sendMessage(STATUS_REMOTE_LOGIN, "账号在别的地方进行了登录", null);
             try {
                 imSocket.getSession().close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                remove(account);
+            } catch (Exception ignored) {
+
             }
         }
     }

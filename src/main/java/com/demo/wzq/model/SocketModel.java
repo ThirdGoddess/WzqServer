@@ -1,33 +1,33 @@
 package com.demo.wzq.model;
 
 
+import com.demo.wzq.game.WzqGameHelper;
 import com.demo.wzq.model.entity.base.R;
-import com.demo.wzq.mybatis.MyBatisUtil;
-import com.demo.wzq.mybatis.db_entity.UInfoEntity;
-import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
-import com.demo.wzq.socket.SocketManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SocketModel extends BaseModel {
 
-    public void verify(R r, String token, int userId) {
-        log.info("线程名：{}", Thread.currentThread().getId());
-        UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
-        UInfoEntity user = mapper.getUserById(userId);
-        if (null != user) {
-            if (user.getUserToken().equals(token)) {
-                if (SocketManager.verifyPass(userId)) {
-                    r.setSuccessRespond();
-                } else {
-                    r.setFailedState("未建立socket连接");
-                }
-            } else {
-                r.setFailedState("socket连接验证失败");
-            }
-        } else {
-            r.setFailedState("socket连接验证失败");
+    /**
+     * 进入座位
+     *
+     * @param id
+     * @return
+     */
+    public R enterSeat(R r, int account, int id) {
+        int i = WzqGameHelper.getInstance().enterSate(id,account );
+        switch (i) {
+            case 1:
+                r.setSuccessRespond();
+                r.setData(WzqGameHelper.getInstance().getWzqRoom(id));
+                break;
+            case 2:
+                r.setFailedState("房间对局座位已满，加入失败");
+                break;
+            case 3:
+                r.setFailedState("已经加入房间，进入失败");
+                break;
         }
+        return r;
     }
-
 }

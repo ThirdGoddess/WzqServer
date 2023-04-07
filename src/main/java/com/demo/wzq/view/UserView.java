@@ -1,10 +1,7 @@
 package com.demo.wzq.view;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.demo.wzq.model.UserModel;
 import com.demo.wzq.model.entity.base.R;
-import com.demo.wzq.mybatis.MyBatisUtil;
-import com.demo.wzq.uitls.IpUtil;
 import com.demo.wzq.uitls.Log;
 import com.demo.wzq.uitls.TextUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -82,9 +79,10 @@ public class UserView {
      * @return
      */
     @PostMapping(value = url_login)
-    public R login(int account, String password) {
+    public R login(HttpServletRequest request, int account, String password) {
         R registerR = new R();
-        userModel.login(registerR, account, password);
+        registerR = userModel.login(registerR, account, password);
+        Log.respond(request, registerR);
         return registerR;
     }
 
