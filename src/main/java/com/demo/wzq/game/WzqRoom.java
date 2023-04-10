@@ -16,14 +16,13 @@ import java.util.List;
  */
 public class WzqRoom {
 
-    //0-下发重置对局消息[棋盘,当前座位选手信息]
-    //1-下发对局未开始，选手准备/取消准备消息
-    //2-下发双方已准备，对局开始消息
-    //3-下发分配选手执棋消息
-    //4-下发可以下棋消息
-    //5-下发选手[落子,求和,认输,超时,离开]消息，携带棋盘
-    //6-下发对局结果消息
-    //7-下发结算奖励消息
+    //0-重置对局消息[棋盘,当前座位选手信息,选手准备/取消准备消息]
+    //1-双方已准备，对局开始消息
+    //2-分配选手执棋消息
+    //3-可以下棋消息
+    //4-选手[落子,求和,认输,超时,离开]消息，携带棋盘
+    //5-对局结果消息
+    //6-结算奖励消息
     @Getter
     @Setter
     private int type;
@@ -54,6 +53,8 @@ public class WzqRoom {
     //2-白子
     //3-黑子高亮状态（最新步）
     //4-白子高亮状态（最新步）
+    //5-黑子连珠状态（高亮）
+    //6-白子连珠状态（高亮）
     @Getter
     private int map[][] = new int[15][15];
 
@@ -62,6 +63,20 @@ public class WzqRoom {
      */
     public void resettingMap() {
         for (int[] ints : map) Arrays.fill(ints, 0);
+    }
+
+    /**
+     * 获取房间内所有用户（对局者，观战者）
+     */
+    public List<User> getAllUser() {
+        User userA = getUserA();
+        User userB = getUserB();
+        List<User> observers = getObservers();
+        List<User> allUsers = new ArrayList<>();
+        if (null != userA) allUsers.add(userA);
+        if (null != userB) allUsers.add(userB);
+        allUsers.addAll(observers);
+        return allUsers;
     }
 
 

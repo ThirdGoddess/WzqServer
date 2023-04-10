@@ -22,7 +22,7 @@ public class SocketManager {
     //==================================================================================================================
     //TYPE值
     public static final int TYPE_ROOM_LIST = 1;//大厅房间列表消息
-
+    public static final int TYPE_ROOM_INFO = 2;//房间内消息
 
     public static ConcurrentMap<Integer, ImSocket> socketConcurrentMap = new ConcurrentReferenceHashMap<>();
 

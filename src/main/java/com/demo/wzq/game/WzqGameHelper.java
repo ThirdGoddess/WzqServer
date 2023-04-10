@@ -4,7 +4,6 @@ import com.demo.wzq.game.obj.User;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
-import com.demo.wzq.socket.ImSocket;
 import com.demo.wzq.socket.SocketManager;
 import lombok.*;
 import org.springframework.util.ConcurrentReferenceHashMap;
@@ -109,7 +108,13 @@ public class WzqGameHelper {
                     User userATemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserA(userATemp);
                     roomUsers.put(account, userATemp);
+
+                    //通知所有用户房间列表变动
                     sendAllRoomList();
+
+                    //刷新room信息，向房间内所有用户通知
+                    sendRoomToAllInfo(id);
+
                     return 1;
                 } else if (userB == null) {
                     //B座位为空
@@ -118,7 +123,13 @@ public class WzqGameHelper {
                     User userBTemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserB(userBTemp);
                     roomUsers.put(account, userBTemp);
+
+                    //通知所有用户房间列表变动
                     sendAllRoomList();
+
+                    //刷新room信息，向房间内所有用户通知
+                    sendRoomToAllInfo(id);
+
                     return 1;
                 } else {
                     //房间对局座位已满
@@ -164,8 +175,19 @@ public class WzqGameHelper {
      */
     private void sendAllRoomList() {
         List<RoomInfo> wzqRoomList = getWzqRoomList();
-        SocketManager.sendMessageToAll(21, 1, "success", wzqRoomList);
+        SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST, "success", wzqRoomList);
     }
+
+    /**
+     * 向指定房间内所有人发送room信息
+     */
+    private void sendRoomToAllInfo(int roomId) {
+        WzqRoom wzqRoom = getWzqRoom(roomId);
+        for (User user : wzqRoom.getAllUser()) {
+            SocketManager.sendMessage(user.getAccount(), SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_INFO, "success", wzqRoom);
+        }
+    }
+
 
     @Getter
     @Setter
