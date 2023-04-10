@@ -1,9 +1,7 @@
 package com.demo.wzq.socket;
 
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
-import com.demo.wzq.game.WzqGameHelper;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
@@ -56,7 +54,8 @@ public class ImSocket {
                     SocketManager.put(account, this);
                     Log.socketInfoMessage(account, isVerify, "认证通过,长连接成功");
                 } else {
-                    sendMessage(SocketManager.STATUS_FAILED, "连接已存在，拒绝连接", null);
+                    sendMessage(SocketManager.STATUS_FAILED, 0, "连接已存在，拒绝连接", null);
+                    Log.socketInfoMessage(account, isVerify, "连接已存在，拒绝连接");
                     try {
                         this.session.close();
                     } catch (Exception ignored) {
@@ -64,7 +63,8 @@ public class ImSocket {
                     }
                 }
             } else {
-                sendMessage(SocketManager.STATUS_FAILED, "非法连接，Token失效", null);
+                sendMessage(SocketManager.STATUS_FAILED, 0, "非法连接，Token失效", null);
+                Log.socketInfoMessage(account, isVerify, "非法连接，Token失效");
                 try {
                     this.session.close();
                 } catch (Exception ignored) {
@@ -72,7 +72,8 @@ public class ImSocket {
                 }
             }
         } else {
-            sendMessage(SocketManager.STATUS_FAILED, "非法连接，Token校验错误", null);
+            sendMessage(SocketManager.STATUS_FAILED, 0, "非法连接，Token校验错误", null);
+            Log.socketInfoMessage(account, isVerify, "非法连接，Token校验错误");
             try {
                 this.session.close();
             } catch (Exception ignored) {
@@ -115,52 +116,30 @@ public class ImSocket {
      * @param message
      * @param data
      */
-    public void sendMessage(int status, String message, Object data) {
-
-        JSONObject json = new JSONObject();
-        json.put("status", status);
-        json.put("msg", message);
-
-        if (null != data) {
-            json.put("data", data);
-        }
-        String jsonString = json.toString();
-        try {
-            this.session.getBasicRemote().sendText(jsonString);
-            Log.socketSendMessage(account, isVerify, jsonString);
-        } catch (Exception ignored) {
-            Log.socketSendMessage(account, isVerify, jsonString + ignored);
-        }
-
-
-    }
-
-    /**
-     * 发送消息
-     *
-     * @param status
-     * @param message
-     * @param data
-     */
     public void sendMessage(int status, int type, String message, Object data) {
 
+        //构建消息
         JSONObject json = new JSONObject();
         json.put("status", status);
         json.put("msg", message);
-        json.put("type", type);
-        json.putObject("body");
 
-        if (null != data) {
-            json.getJSONObject("body").put("type", type);
-            json.getJSONObject("body").put("data", data);
+        if (0 != type || null != data) {
+            json.putObject("body");
+            if (0 != type) {
+                json.getJSONObject("body").put("type", type);
+            }
+            if (null != data) {
+                json.getJSONObject("body").put("data", data);
+            }
         }
-
         String jsonString = JSONObject.toJSONString(json, JSONWriter.Feature.WriteMapNullValue);
+
+        //发送消息
         try {
             this.session.getBasicRemote().sendText(jsonString);
             Log.socketSendMessage(account, isVerify, jsonString);
         } catch (Exception ignored) {
-            Log.socketSendMessage(account, isVerify, jsonString + ignored);
+            Log.socketSendMessage(account, isVerify, "ERROR:" + ignored + ":" + jsonString);
         }
 
 

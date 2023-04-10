@@ -1,6 +1,5 @@
 package com.demo.wzq;
 
-import com.demo.wzq.config.MyInterceptor;
 import com.demo.wzq.game.WzqGameHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

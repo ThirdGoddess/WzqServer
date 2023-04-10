@@ -71,7 +71,7 @@ public class UserModel extends BaseModel {
             if (userPassword.equals(getSha1(password))) {
 
                 //只要登录，不管有没有socket连接，向socket发送异地登录消息
-                SocketManager.sendMessage_3(account);
+                SocketManager.sendMessage(account, 3, "该账号在别处别登录");
 
                 String token = setUserToken(mapper, account);
                 r.setSuccessRespond();

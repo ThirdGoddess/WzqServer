@@ -14,9 +14,14 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class SocketManager {
 
-    public static final int STATUS_COMMON = 21;
-    public static final int STATUS_FAILED = 22;
-    public static final int STATUS_REMOTE_LOGIN = 3;
+    //==================================================================================================================
+    //STATUS码
+    public static final int STATUS_COMMON = 21;//一般消息
+    public static final int STATUS_FAILED = 22;//一般失败消息
+    public static final int STATUS_REMOTE_LOGIN = 3;//异地登录消息
+    //==================================================================================================================
+    //TYPE值
+    public static final int TYPE_ROOM_LIST = 1;//大厅房间列表消息
 
 
     public static ConcurrentMap<Integer, ImSocket> socketConcurrentMap = new ConcurrentReferenceHashMap<>();
@@ -43,46 +48,29 @@ public class SocketManager {
     //业务代码
 
     /**
-     * 发送业务消息
+     * 发送消息
      *
      * @param account 账号
-     * @param msg     信息
+     * @param status  状态码
+     * @param msg     message
+     */
+    public static void sendMessage(int account, int status, String msg) {
+        sendMessage(account, status, 0, msg, null);
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param account 账号
+     * @param status  状态码
+     * @param type    消息type值
+     * @param msg     消息
      * @param data    data数据
      */
-    public static void sendMessage_21(int account, String msg, Object data) {
-        ImSocket imSocket = get(account);
+    public static void sendMessage(int account, int status, int type, String msg, Object data) {
+        ImSocket imSocket = socketConcurrentMap.get(account);
         if (null != imSocket) {
-            imSocket.sendMessage(STATUS_COMMON, msg, data);
-        }
-    }
-
-    /**
-     * 发送一般错误消息
-     *
-     * @param account 账号
-     * @param msg     信息
-     */
-    public static void sendMessage_22(int account, String msg) {
-        ImSocket imSocket = get(account);
-        if (null != imSocket) {
-            imSocket.sendMessage(STATUS_FAILED, msg, null);
-        }
-    }
-
-    /**
-     * 发送被异地登录消息
-     *
-     * @param account 账号
-     */
-    public static void sendMessage_3(int account) {
-        ImSocket imSocket = get(account);
-        if (null != imSocket) {
-            imSocket.sendMessage(STATUS_REMOTE_LOGIN, "账号在别的地方进行了登录", null);
-            try {
-                imSocket.getSession().close();
-            } catch (Exception ignored) {
-
-            }
+            imSocket.sendMessage(status, type, msg, data);
         }
     }
 
