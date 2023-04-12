@@ -8,10 +8,7 @@ import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
 import com.demo.wzq.socket.SocketManager;
 import com.demo.wzq.uitls.JwtUtils;
-import com.squareup.okhttp.*;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
 
 /**
  * @author ThirdGoddess
@@ -86,6 +83,30 @@ public class UserModel extends BaseModel {
     }
 
     /**
+     * Token登录
+     *
+     * @param r
+     * @param userToken
+     * @param userId
+     * @return
+     */
+    public R loginByToken(R r, String userToken, int userId) {
+        UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
+        UInfoEntity userInfo = mapper.getUserById(userId);
+        if (null != userInfo) {
+            if(userToken.equals( userInfo.getUserToken())){
+                r.setSuccessRespond();
+                r.setData(new LoginEntity(userInfo.getUserNick(), userInfo.getId(), userInfo.getUserToken(), userInfo.getUserIntegral()));
+            }else{
+                r.setFailedState("账号在其它设备登录，请重新登录");
+            }
+        } else {
+            r.setFailedState("用户异常");
+        }
+        return r;
+    }
+
+    /**
      * 设置用户Token
      *
      * @param mapper
@@ -98,34 +119,5 @@ public class UserModel extends BaseModel {
         return token;
     }
 
-    private final OkHttpClient client = new OkHttpClient();
-
-    public void test() {
-
-        for (int i = 0; i < 1000; i++) {
-            new Thread(() -> {
-                String json = "{\"text\":\"你好呀ChatGPT" + getFlag() + "\"}";
-
-                RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-
-                Request request = new Request.Builder().url("http://doubleshi.com:8081/openai/chat").post(body).build();
-
-                Call call = client.newCall(request);
-                try {
-                    Response response = call.execute();
-                    System.out.println(response.body().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        }
-    }
-
-    private static int flag = 1;
-
-    private synchronized int getFlag() {
-        flag++;
-        return flag;
-    }
 
 }

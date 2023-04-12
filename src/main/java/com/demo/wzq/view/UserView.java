@@ -2,6 +2,7 @@ package com.demo.wzq.view;
 
 import com.demo.wzq.model.UserModel;
 import com.demo.wzq.model.entity.base.R;
+import com.demo.wzq.uitls.JwtUtils;
 import com.demo.wzq.uitls.Log;
 import com.demo.wzq.uitls.TextUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class UserView {
 
     private static final String url_register = "register";
     private static final String url_login = "login";
+    private static final String url_loginByToken = "loginByToken";
 
     private UserModel userModel = new UserModel();
 
@@ -86,11 +88,22 @@ public class UserView {
         return registerR;
     }
 
-    @PostMapping(value = "test")
-    public R test() {
+    /**
+     * 通过Token登录
+     * @param request
+     * @return
+     */
+    @PostMapping(value = url_loginByToken)
+    public R loginByToken(HttpServletRequest request){
+        String userToken = request.getHeader("UserToken");
         R registerR = new R();
-        userModel.test();
-        registerR.setSuccessRespond();
+        int userId = JwtUtils.getUserId(userToken);
+        if(-1 != userId){
+            registerR = userModel.loginByToken(registerR,userToken,userId);
+        }else{
+            registerR.setFailedState("Token错误");
+        }
+        Log.respond(request, registerR);
         return registerR;
     }
 

@@ -3,7 +3,6 @@ package com.demo.wzq.config;
 import com.alibaba.fastjson2.JSONObject;
 import com.demo.wzq.model.entity.base.R;
 import com.demo.wzq.mybatis.MyBatisUtil;
-import com.demo.wzq.uitls.IpUtil;
 import com.demo.wzq.uitls.JwtUtils;
 import com.demo.wzq.uitls.Log;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,6 @@ public class MyInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String userToken = request.getHeader("UserToken");
-
         Log.request(request);
 
         //判断是否跳过拦截
