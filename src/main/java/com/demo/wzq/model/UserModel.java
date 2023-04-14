@@ -94,11 +94,16 @@ public class UserModel extends BaseModel {
         UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
         UInfoEntity userInfo = mapper.getUserById(userId);
         if (null != userInfo) {
-            if(userToken.equals( userInfo.getUserToken())){
+            if (userToken.equals(userInfo.getUserToken())) {
+
+                //更新Token
+                String token = setUserToken(mapper, userId);
+
                 r.setSuccessRespond();
-                r.setData(new LoginEntity(userInfo.getUserNick(), userInfo.getId(), userInfo.getUserToken(), userInfo.getUserIntegral()));
-            }else{
-                r.setFailedState("账号在其它设备登录，请重新登录");
+                r.setData(new LoginEntity(userInfo.getUserNick(), userInfo.getId(), token, userInfo.getUserIntegral()));
+            } else {
+                //账号异地登录
+                r.setFailedState(R.FAILED_CODE_OTHER_LOGIN);
             }
         } else {
             r.setFailedState("用户异常");
@@ -110,12 +115,12 @@ public class UserModel extends BaseModel {
      * 设置用户Token
      *
      * @param mapper
-     * @param id
+     * @param userId
      * @return
      */
-    private String setUserToken(UserInfoMapper mapper, int id) {
-        String token = JwtUtils.createToken(id);
-        mapper.updateUserToken(id, token);
+    private String setUserToken(UserInfoMapper mapper, int userId) {
+        String token = JwtUtils.createToken(userId);
+        mapper.updateUserToken(userId, token);
         return token;
     }
 
