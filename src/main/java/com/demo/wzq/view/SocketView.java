@@ -6,10 +6,7 @@ import com.demo.wzq.socket.SocketManager;
 import com.demo.wzq.uitls.JwtUtils;
 import com.demo.wzq.uitls.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,6 +40,25 @@ public class SocketView {
             r.setFailedState("Socket未连接或未认证");
         }
 
+        Log.respond(request, r);
+        return r;
+    }
+
+    /**
+     * 获取房间列表
+     *
+     * @return
+     */
+    @GetMapping(value = "getRoomList")
+    public R getRoomList(HttpServletRequest request, @RequestHeader("UserToken") String token) {
+        int userId = JwtUtils.getUserId(token);
+        R r = new R();
+        if (null != SocketManager.get(userId) && SocketManager.get(userId).isVerify()) {
+            //向指定用户发送房间列表
+            r = socketModel.getRoomList(r, userId);
+        } else {
+            r.setFailedState("Socket连接状态错误");
+        }
         Log.respond(request, r);
         return r;
     }

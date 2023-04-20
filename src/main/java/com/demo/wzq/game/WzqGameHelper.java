@@ -194,7 +194,7 @@ public class WzqGameHelper {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    static class RoomInfo {
+    public static class RoomInfo {
         private int id;
         private int type;
         private int userIdA;
