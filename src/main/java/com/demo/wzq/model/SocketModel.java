@@ -12,39 +12,23 @@ import java.util.List;
 public class SocketModel extends BaseModel {
 
     /**
-     * 进入座位
-     *
-     * @param id
-     * @return
-     */
-    public R enterSeat(R r, int account, int id) {
-        int i = WzqGameHelper.getInstance().enterSate(id, account);
-        switch (i) {
-            case 1:
-                r.setSuccessRespond();
-                r.setData(WzqGameHelper.getInstance().getWzqRoom(id));
-                break;
-            case 2:
-                r.setFailedState("房间对局座位已满，加入失败");
-                break;
-            case 3:
-                r.setFailedState("已经加入房间，进入失败");
-                break;
-        }
-        return r;
-    }
-
-    /**
-     * 获取房间列表
+     * 进入首页，推送初始化信息
      *
      * @param r
      * @param userId
      * @return
      */
-    public R getRoomList(R r, int userId) {
+    public R enterHome(R r, int userId) {
+
+        //推送房间列表
         List<WzqGameHelper.RoomInfo> wzqRoomList = WzqGameHelper.getInstance().getWzqRoomList();
         SocketManager.get(userId).sendMessage(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST, "success", wzqRoomList);
+
+        //TODO 推送个人昵称积分信息
+
         r.setSuccessRespond();
         return r;
     }
+
+
 }

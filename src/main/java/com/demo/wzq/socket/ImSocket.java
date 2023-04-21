@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -20,6 +21,7 @@ import java.io.IOException;
 @Slf4j
 @Component
 @ServerEndpoint(value = "/im/{token}")
+@CrossOrigin
 public class ImSocket {
 
     //用户账号
@@ -53,6 +55,7 @@ public class ImSocket {
                     isVerify = true;
                     SocketManager.put(account, this);
                     Log.socketInfoMessage(account, isVerify, "认证通过,长连接成功");
+                    sendMessage(SocketManager.STATUS_OPEN, "success");
                 } else {
                     sendMessage(SocketManager.STATUS_FAILED, 0, "连接已存在，拒绝连接", null);
                     Log.socketInfoMessage(account, isVerify, "连接已存在，拒绝连接");
@@ -108,6 +111,17 @@ public class ImSocket {
         if (isVerify) {
 
         }
+    }
+
+
+    /**
+     * 发送消息
+     *
+     * @param status
+     * @param message
+     */
+    public void sendMessage(int status, String message) {
+        sendMessage(status, 0, message, null);
     }
 
     /**

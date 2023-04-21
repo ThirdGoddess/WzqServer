@@ -16,13 +16,15 @@ public class SocketManager {
 
     //==================================================================================================================
     //STATUS码
+    public static final int STATUS_OPEN = 20;//打开连接回调
     public static final int STATUS_COMMON = 21;//一般消息
     public static final int STATUS_FAILED = 22;//一般失败消息
     public static final int STATUS_REMOTE_LOGIN = 3;//异地登录消息
     //==================================================================================================================
     //TYPE值
     public static final int TYPE_ROOM_LIST = 1;//大厅房间列表消息
-    public static final int TYPE_ROOM_INFO = 2;//房间内消息
+    public static final int TYPE_ROOM_LIST_CHANGE = 2;//针对房间列表部分房间刷新
+    public static final int TYPE_ROOM_INFO = 10;//房间内消息
 
     public static ConcurrentMap<Integer, ImSocket> socketConcurrentMap = new ConcurrentReferenceHashMap<>();
 

@@ -52,39 +52,49 @@ public class WzqGameHelper {
     }
 
     /**
-     * 获取五子棋房间
+     * 获取五子棋房间-详细
      *
      * @param roomId 房间id
      * @return WzqRoom
      */
-    public WzqRoom getWzqRoom(int roomId) {
+    public WzqRoom getWzqRoomInfo(int roomId) {
         return wzqGames.get(roomId);
     }
 
     /**
-     * 获取房间列表
+     * 获取五子棋房间-基本数据
+     *
+     * @param roomId
+     * @return
+     */
+    public RoomInfo getWzqRoom(int roomId) {
+        WzqRoom value = wzqGames.get(roomId);
+        RoomInfo roomInfo = new RoomInfo();
+        roomInfo.setId(value.getRoomId());
+        roomInfo.setType(value.getType());
+        if (null != value.getUserA()) {
+            roomInfo.setUserIdA(value.getUserA().getAccount());
+            roomInfo.setUserNickA(value.getUserA().getNick());
+        }
+
+        if (null != value.getUserB()) {
+            roomInfo.setUserIdB(value.getUserB().getAccount());
+            roomInfo.setUserNickB(value.getUserB().getNick());
+        }
+
+        roomInfo.setObserverCount(value.getObservers().size());
+        return roomInfo;
+    }
+
+    /**
+     * 获取房间列表-基本信息
      *
      * @return List<RoomInfo>
      */
     public List<RoomInfo> getWzqRoomList() {
         List<RoomInfo> roomInfos = new ArrayList<>();
         for (int i = 1; i < (MAX_ROOM_COUNT + 1); i++) {
-            WzqRoom value = wzqGames.get(i);
-            RoomInfo roomInfo = new RoomInfo();
-            roomInfo.setId(value.getRoomId());
-            roomInfo.setType(value.getType());
-            if (null != value.getUserA()) {
-                roomInfo.setUserIdA(value.getUserA().getAccount());
-                roomInfo.setUserNickA(value.getUserA().getNick());
-            }
-
-            if (null != value.getUserB()) {
-                roomInfo.setUserIdB(value.getUserB().getAccount());
-                roomInfo.setUserNickB(value.getUserB().getNick());
-            }
-
-            roomInfo.setObserverCount(value.getObservers().size());
-            roomInfos.add(roomInfo);
+            roomInfos.add(getWzqRoom(i));
         }
         return roomInfos;
     }
@@ -108,13 +118,6 @@ public class WzqGameHelper {
                     User userATemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserA(userATemp);
                     roomUsers.put(account, userATemp);
-
-                    //通知所有用户房间列表变动
-                    sendAllRoomList();
-
-                    //刷新room信息，向房间内所有用户通知
-                    sendRoomToAllInfo(id);
-
                     return 1;
                 } else if (userB == null) {
                     //B座位为空
@@ -123,13 +126,6 @@ public class WzqGameHelper {
                     User userBTemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserB(userBTemp);
                     roomUsers.put(account, userBTemp);
-
-                    //通知所有用户房间列表变动
-                    sendAllRoomList();
-
-                    //刷新room信息，向房间内所有用户通知
-                    sendRoomToAllInfo(id);
-
                     return 1;
                 } else {
                     //房间对局座位已满
@@ -146,7 +142,7 @@ public class WzqGameHelper {
      *
      * @param account
      */
-    public void exitRoom(int account) {
+    public int exitRoom(int account) {
         synchronized (WzqGameHelper.class) {
             for (User value : roomUsers.values()) {
                 if (value.getAccount() == account) {
@@ -156,36 +152,12 @@ public class WzqGameHelper {
                     } else if (null != wzqRoom.getUserB() && wzqRoom.getUserB().getAccount() == account) {
                         wzqRoom.setUserB(null);
                     }
-
-                    //TODO 通知对局结果
-
-                    //TODO 通知所有人房间列表
-                    sendAllRoomList();
-
-                    //结束
-                    return;
+                    roomUsers.remove(account);
+                    return value.getRoomId();
                 }
-//            value
             }
         }
-    }
-
-    /**
-     * 向所有人发送房间列表
-     */
-    private void sendAllRoomList() {
-        List<RoomInfo> wzqRoomList = getWzqRoomList();
-        SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST, "success", wzqRoomList);
-    }
-
-    /**
-     * 向指定房间内所有人发送room信息
-     */
-    private void sendRoomToAllInfo(int roomId) {
-        WzqRoom wzqRoom = getWzqRoom(roomId);
-        for (User user : wzqRoom.getAllUser()) {
-            SocketManager.sendMessage(user.getAccount(), SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_INFO, "success", wzqRoom);
-        }
+        return -1;
     }
 
 
