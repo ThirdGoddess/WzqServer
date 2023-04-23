@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("game")
 public class GameView {
 

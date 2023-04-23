@@ -38,7 +38,10 @@ public class SocketManager {
 
     public static void remove(int account) {
         ImSocket imSocket = get(account);
-        WzqGameHelper.getInstance().exitRoom(account);
+
+        //更新游戏状态
+        WzqGameHelper.getInstance().disconnect(account);
+
         socketConcurrentMap.remove(account);
     }
 

@@ -55,11 +55,6 @@ public class GameModel extends BaseModel{
         if (-1 != rid) {
             //退出成功
 
-            //TODO 更新对局结果
-
-            //向所有人发送Socket，更新房间列表
-            SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST_CHANGE, "change", WzqGameHelper.getInstance().getWzqRoom(rid));
-
             r.setSuccessRespond();
             r.setMsg("退出成功");
         } else {

@@ -1,6 +1,8 @@
 package com.demo.wzq.game;
 
 import com.demo.wzq.game.obj.User;
+import com.demo.wzq.model.GameModel;
+import com.demo.wzq.model.entity.base.R;
 import com.demo.wzq.mybatis.MyBatisUtil;
 import com.demo.wzq.mybatis.db_entity.UInfoEntity;
 import com.demo.wzq.mybatis.db_mapper.UserInfoMapper;
@@ -153,11 +155,28 @@ public class WzqGameHelper {
                         wzqRoom.setUserB(null);
                     }
                     roomUsers.remove(account);
+
+                    //向所有人发送Socket，更新房间列表
+                    SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST_CHANGE, "change", WzqGameHelper.getInstance().getWzqRoom(value.getRoomId()));
+
+                    //TODO 向该房间内的所有用户发送对局结果
+
                     return value.getRoomId();
                 }
             }
         }
         return -1;
+    }
+
+    /**
+     * 断开连接调用
+     */
+    public void disconnect(int account){
+
+        //退出房间（包含Socket通知全体房间变动、房间内对局结果）
+        GameModel gameModel = new GameModel();
+        gameModel.exitRoom(new R(),account);
+
     }
 
 

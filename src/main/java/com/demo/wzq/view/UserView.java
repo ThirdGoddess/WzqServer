@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @RequestMapping("user")
-@CrossOrigin
 public class UserView {
 
     private static final String url_register = "register";
@@ -95,7 +94,6 @@ public class UserView {
      * @param request
      * @return
      */
-    @CrossOrigin
     @PostMapping(value = url_loginByToken)
     public R loginByToken(HttpServletRequest request){
         String userToken = request.getHeader("UserToken");

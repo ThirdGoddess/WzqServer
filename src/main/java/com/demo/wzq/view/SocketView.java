@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("im")
 public class SocketView {
 
