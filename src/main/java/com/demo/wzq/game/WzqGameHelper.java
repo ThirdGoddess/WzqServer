@@ -120,6 +120,10 @@ public class WzqGameHelper {
                     User userATemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserA(userATemp);
                     roomUsers.put(account, userATemp);
+
+                    //向所有人发送Socket，更新房间列表变动
+                    SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST_CHANGE, "change", WzqGameHelper.getInstance().getWzqRoom(id));
+
                     return 1;
                 } else if (userB == null) {
                     //B座位为空
@@ -128,6 +132,9 @@ public class WzqGameHelper {
                     User userBTemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
                     wzqRoom.setUserB(userBTemp);
                     roomUsers.put(account, userBTemp);
+
+                    //向所有人发送Socket，更新房间列表变动
+                    SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST_CHANGE, "change", WzqGameHelper.getInstance().getWzqRoom(id));
                     return 1;
                 } else {
                     //房间对局座位已满
@@ -171,11 +178,11 @@ public class WzqGameHelper {
     /**
      * 断开连接调用
      */
-    public void disconnect(int account){
+    public void disconnect(int account) {
 
         //退出房间（包含Socket通知全体房间变动、房间内对局结果）
         GameModel gameModel = new GameModel();
-        gameModel.exitRoom(new R(),account);
+        gameModel.exitRoom(new R(), account);
 
     }
 

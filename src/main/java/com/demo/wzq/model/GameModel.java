@@ -27,8 +27,7 @@ public class GameModel extends BaseModel{
 
                 //
 
-                //向所有人发送Socket，更新房间列表
-                SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST_CHANGE, "change", WzqGameHelper.getInstance().getWzqRoom(rid));
+                //向所有人发送Socket，更新房间列表变动
 
 
                 break;
