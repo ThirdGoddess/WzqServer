@@ -1,6 +1,8 @@
 package com.demo.wzq.socket;
 
 import com.demo.wzq.game.WzqGameHelper;
+import com.demo.wzq.game.WzqRoom;
+import com.demo.wzq.game.obj.User;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
 import java.io.IOException;
@@ -24,7 +26,8 @@ public class SocketManager {
     //TYPE值
     public static final int TYPE_ROOM_LIST = 1;//大厅房间列表消息
     public static final int TYPE_ROOM_LIST_CHANGE = 2;//针对房间列表部分房间刷新
-    public static final int TYPE_ROOM_INFO = 10;//房间内消息
+    public static final int TYPE_ROOM_INFO = 10;//房间内消息，房间内整个详情消息（不包括聊天）
+    public static final int TYPE_ROOM_USER_READY = 11;//房间内选手准备消息
 
     public static ConcurrentMap<Integer, ImSocket> socketConcurrentMap = new ConcurrentReferenceHashMap<>();
 
@@ -79,6 +82,28 @@ public class SocketManager {
         }
     }
 
+    /**
+     * 向房间内的所有用户发送消息
+     *
+     * @param status 状态码
+     * @param type   消息type值
+     * @param msg    消息
+     * @param data   data数据
+     */
+    public static void sendMessageToRoom(int roomId, int status, int type, String msg, Object data) {
+        new Thread(() -> {
+            WzqRoom wzqRoomInfo = WzqGameHelper.getInstance().getWzqRoomInfo(roomId);
+            List<User> allUser = wzqRoomInfo.getAllUser();
+            for (User user : allUser) {
+                int account = user.getAccount();
+                ImSocket imSocket = socketConcurrentMap.get(account);
+                if (null != imSocket) {
+                    imSocket.sendMessage(status, type, msg, data);
+                }
+            }
+        }).start();
+    }
+
 
     /**
      * 向所有已认证的socket发送消息
@@ -88,9 +113,11 @@ public class SocketManager {
      * @param data
      */
     public static void sendMessageToAll(int status, int type, String msg, Object data) {
-        for (ImSocket imSocket : socketConcurrentMap.values()) {
-            imSocket.sendMessage(status, type, msg, data);
-        }
+        new Thread(() -> {
+            for (ImSocket imSocket : socketConcurrentMap.values()) {
+                imSocket.sendMessage(status, type, msg, data);
+            }
+        }).start();
     }
 
 }

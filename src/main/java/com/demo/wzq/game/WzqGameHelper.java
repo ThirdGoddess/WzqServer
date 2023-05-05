@@ -113,28 +113,29 @@ public class WzqGameHelper {
                 WzqRoom wzqRoom = wzqGames.get(id);
                 User userA = wzqRoom.getUserA();
                 User userB = wzqRoom.getUserB();
-                if (userA == null) {
-                    //A座位为空
-                    UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
-                    UInfoEntity user = mapper.getUserById(account);
-                    User userATemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
-                    wzqRoom.setUserA(userATemp);
-                    roomUsers.put(account, userATemp);
+
+                if (userA == null || userB == null) {
+                    if (userA == null) {
+                        //A座位为空
+                        UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
+                        UInfoEntity user = mapper.getUserById(account);
+                        User userATemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
+                        wzqRoom.setUserA(userATemp);
+                        roomUsers.put(account, userATemp);
+                    } else {
+                        //B座位为空
+                        UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
+                        UInfoEntity user = mapper.getUserById(account);
+                        User userBTemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
+                        wzqRoom.setUserB(userBTemp);
+                        roomUsers.put(account, userBTemp);
+                    }
 
                     //向所有人发送Socket，更新房间列表变动
                     SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST_CHANGE, "change", WzqGameHelper.getInstance().getWzqRoom(id));
 
-                    return 1;
-                } else if (userB == null) {
-                    //B座位为空
-                    UserInfoMapper mapper = MyBatisUtil.getMapper(UserInfoMapper.class);
-                    UInfoEntity user = mapper.getUserById(account);
-                    User userBTemp = new User(user.getUserNick(), user.getId(), user.getUserIntegral(), false, 0, 0, 0, id);
-                    wzqRoom.setUserB(userBTemp);
-                    roomUsers.put(account, userBTemp);
+                    //TODO 向房间内所有用户通知房间状态
 
-                    //向所有人发送Socket，更新房间列表变动
-                    SocketManager.sendMessageToAll(SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_LIST_CHANGE, "change", WzqGameHelper.getInstance().getWzqRoom(id));
                     return 1;
                 } else {
                     //房间对局座位已满
@@ -184,6 +185,80 @@ public class WzqGameHelper {
         GameModel gameModel = new GameModel();
         gameModel.exitRoom(new R(), account);
 
+    }
+
+    /**
+     * 根据用户ID获取用户所在的房间ID
+     */
+    public int getRoomIdByUserId(int account) {
+        if (null != roomUsers.get(account)) {
+            return roomUsers.get(account).getRoomId();
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * 准备/取消准备
+     *
+     * @param type 1准备;2取消准备
+     * @return 1准备成功，2取消准备成功，3用户与房间id绑定异常，4当前房间状态不允许准备/取消准备,5type类型错误
+     */
+    public int ready(int type, int account) {
+        synchronized (WzqGameHelper.class) {
+            int roomId = getRoomIdByUserId(account);
+            if (-1 != roomId) {
+                WzqRoom wzqRoom = wzqGames.get(roomId);
+
+                //判断房间状态是否可以准备
+                int roomType = wzqRoom.getType();
+
+                //判断房间状态，选手是否对应
+                if (roomType == 0 && ((null != wzqRoom.getUserA() && wzqRoom.getUserA().getAccount() == account) || (null != wzqRoom.getUserB() && wzqRoom.getUserB().getAccount() == account))) {
+
+                    switch (type) {
+                        case 1:
+
+                            //准备
+                            if (null != wzqRoom.getUserA() && wzqRoom.getUserA().getAccount() == account) {
+                                wzqRoom.getUserA().setReady(true);
+                            } else if (null != wzqRoom.getUserB() && wzqRoom.getUserB().getAccount() == account) {
+                                wzqRoom.getUserB().setReady(true);
+                            }
+
+                            //TODO 向房间内所有用户下发准备状态消息
+//                            SocketManager.sendMessage();
+
+                            //判断双方是否准备，准备开局
+                            if (null != wzqRoom.getUserA() && null != wzqRoom.getUserB() && wzqRoom.getUserA().isReady() && wzqRoom.getUserB().isReady()) {
+                                //双方均已准备
+                                //向房间内所有用户下发棋局开始消息
+                                wzqRoom.setType(11);
+                            }
+
+                            return 1;
+                        case 2:
+                            //取消准备
+                            if (wzqRoom.getUserA().getAccount() == account) {
+                                wzqRoom.getUserA().setReady(false);
+                            } else if (wzqRoom.getUserB().getAccount() == account) {
+                                wzqRoom.getUserB().setReady(false);
+                            }
+
+                            //TODO 向房间内所有用户下发准备状态消息
+
+                            return 1;
+                        default:
+                            return 5;
+                    }
+
+                } else {
+                    return 4;
+                }
+            } else {
+                return 3;
+            }
+        }
     }
 
 
