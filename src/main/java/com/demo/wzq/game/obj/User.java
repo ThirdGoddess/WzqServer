@@ -20,6 +20,6 @@ public class User {
     private boolean isReady = false;//是否准备
     private long gameTime;//剩余局时
     private long stepTime;//剩余步时
-    private int chessType;//执棋信息
+    private int chessType;//执棋信息：1黑，2白
     private int roomId;//所在房间id
 }

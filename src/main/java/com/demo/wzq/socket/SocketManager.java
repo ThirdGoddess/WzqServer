@@ -26,8 +26,9 @@ public class SocketManager {
     //TYPE值
     public static final int TYPE_ROOM_LIST = 1;//大厅房间列表消息
     public static final int TYPE_ROOM_LIST_CHANGE = 2;//针对房间列表部分房间刷新
-    public static final int TYPE_ROOM_INFO = 10;//房间内消息，房间内整个详情消息（不包括聊天）
-    public static final int TYPE_ROOM_USER_READY = 11;//房间内选手准备消息
+    public static final int TYPE_ROOM_INFO = 3;//房间内消息，房间内整个详情消息（不包括聊天）
+    public static final int TYPE_ROOM_USER_READY = 10;//房间内选手准备消息
+    public static final int TYPE_ROOM_START = 11;//房间棋局开始消息
 
     public static ConcurrentMap<Integer, ImSocket> socketConcurrentMap = new ConcurrentReferenceHashMap<>();
 

@@ -222,18 +222,25 @@ public class WzqGameHelper {
                             //准备
                             if (null != wzqRoom.getUserA() && wzqRoom.getUserA().getAccount() == account) {
                                 wzqRoom.getUserA().setReady(true);
+
+                                //下发准备消息
+                                SocketManager.sendMessageToRoom(roomId, SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_USER_READY, "ready", wzqRoom.getUserA());
                             } else if (null != wzqRoom.getUserB() && wzqRoom.getUserB().getAccount() == account) {
                                 wzqRoom.getUserB().setReady(true);
+
+                                //下发准备消息
+                                SocketManager.sendMessageToRoom(roomId, SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_USER_READY, "ready", wzqRoom.getUserB());
                             }
 
-                            //TODO 向房间内所有用户下发准备状态消息
-//                            SocketManager.sendMessage();
 
                             //判断双方是否准备，准备开局
                             if (null != wzqRoom.getUserA() && null != wzqRoom.getUserB() && wzqRoom.getUserA().isReady() && wzqRoom.getUserB().isReady()) {
                                 //双方均已准备
                                 //向房间内所有用户下发棋局开始消息
                                 wzqRoom.setType(11);
+                                SocketManager.sendMessageToRoom(roomId, SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_START, "start", wzqRoom);
+
+                                playToType20(roomId);
                             }
 
                             return 1;
@@ -241,11 +248,15 @@ public class WzqGameHelper {
                             //取消准备
                             if (wzqRoom.getUserA().getAccount() == account) {
                                 wzqRoom.getUserA().setReady(false);
+
+                                //下发取消准备消息
+                                SocketManager.sendMessageToRoom(roomId, SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_USER_READY, "ready message", wzqRoom.getUserA());
                             } else if (wzqRoom.getUserB().getAccount() == account) {
                                 wzqRoom.getUserB().setReady(false);
-                            }
 
-                            //TODO 向房间内所有用户下发准备状态消息
+                                //下发取消准备消息
+                                SocketManager.sendMessageToRoom(roomId, SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_USER_READY, "ready message", wzqRoom.getUserB());
+                            }
 
                             return 1;
                         default:
@@ -259,6 +270,27 @@ public class WzqGameHelper {
                 return 3;
             }
         }
+    }
+
+
+    /**
+     * 分配选手执棋消息
+     */
+    private void playToType20(int roomId) {
+        WzqRoom wzqRoom = wzqGames.get(roomId);
+        wzqRoom.setType(20);
+        int result = (int) (1 + Math.random() * 2);
+        if (result == 0) {
+            //A执黑棋
+            wzqRoom.getUserA().setChessType(1);
+            wzqRoom.getUserB().setChessType(2);
+        } else {
+            //B执黑棋
+            wzqRoom.getUserA().setChessType(2);
+            wzqRoom.getUserB().setChessType(1);
+        }
+
+        //TODO 下发执棋消息
     }
 
 
