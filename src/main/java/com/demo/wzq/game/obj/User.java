@@ -22,4 +22,5 @@ public class User {
     private long stepTime;//剩余步时
     private int chessType;//执棋信息：1黑，2白
     private int roomId;//所在房间id
+    private boolean isMayDown;//是否可以落子
 }

@@ -1,5 +1,7 @@
 package com.demo.wzq.game;
 
+import com.alibaba.fastjson2.JSONObject;
+import com.demo.wzq.game.obj.Type20Entity;
 import com.demo.wzq.game.obj.User;
 import com.demo.wzq.model.GameModel;
 import com.demo.wzq.model.entity.base.R;
@@ -284,13 +286,32 @@ public class WzqGameHelper {
             //A执黑棋
             wzqRoom.getUserA().setChessType(1);
             wzqRoom.getUserB().setChessType(2);
+            wzqRoom.getUserA().setMayDown(true);
+            wzqRoom.getUserB().setMayDown(false);
         } else {
             //B执黑棋
             wzqRoom.getUserA().setChessType(2);
             wzqRoom.getUserB().setChessType(1);
+            wzqRoom.getUserA().setMayDown(false);
+            wzqRoom.getUserB().setMayDown(true);
         }
 
-        //TODO 下发执棋消息
+        Type20Entity type20Entity = new Type20Entity(wzqRoom.getUserA().getChessType(), wzqRoom.getUserB().getChessType());
+        //下发执棋消息
+        SocketManager.sendMessageToRoom(roomId, SocketManager.STATUS_COMMON, SocketManager.TYPE_ROOM_CHESS_TYPE, "chessType", type20Entity);
+
+        //TODO 待定
+        playToType30(roomId);
+    }
+
+    private void playToType30(int roomId) {
+        WzqRoom wzqRoom = wzqGames.get(roomId);
+
+
+
+        //TODO 局时、步时倒计时
+
+
     }
 
 
